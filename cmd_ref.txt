@@ -1,0 +1,23 @@
+commands:
+> flutter create table_tap --org "com.queentouchtech"
+
+cd table_tap
+table_tap> flutter pub add flutter_bloc
+table_tap> flutter pub add get_storage collection:1.18.0
+
+table_tap> flutter create -t package packages/api
+table_tap> cd packages\api
+table_tap\packages\api> flutter pub add dio logger
+
+table_tap> flutter create -t package packages/tools
+table_tap> cd packages\tools
+table_tap\packages\tools> flutter pub add collection:1.18.0
+
+table_tap> flutter pub get
+
+reference:
+Dio Setup
+https://github.com/mahdinazmi/Flutter-Register-Login/blob/main/lib/core/network/dio_client.dart
+https://github.com/mahdinazmi/Flutter-Register-Login/blob/main/lib/core/network/interceptors.dart
+
+https://medium.com/tide-engineering-team/basic-and-advanced-networking-in-dart-and-flutter-the-tide-way-part-3-http-client-basic-d922fb65a01c
