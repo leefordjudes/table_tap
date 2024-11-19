@@ -23,10 +23,9 @@ class AuthenticationBloc
     final token = api.storage.read<String>('token');
     if (token == null) {
       emit(Unauthenticated());
-      api.storage.write('token', 'user-token1');
       return;
     }
-    api.client.setHeader({'token': token});
+    // api.client.setHeader({'token': token});
     try {
       final UserProfileResponse profile = await api.getUserProfile();
       return emit(Authenticated(user: profile));
@@ -42,11 +41,9 @@ class AuthenticationBloc
   ) async {
     final token = api.storage.read<String>('token');
     if (token == null) {
-      emit(Unauthenticated());
-      api.storage.write('token', 'user-token1');
-      return;
+      return emit(Unauthenticated());
     }
-    api.client.setHeader({'token': token});
+    // api.client.setHeader({'token': token});
     try {
       final UserProfileResponse profile = await api.getUserProfile();
       return emit(Authenticated(user: profile));

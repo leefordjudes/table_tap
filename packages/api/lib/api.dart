@@ -17,10 +17,10 @@ class ApiRepository {
     required baseUrl,
   }) : client = DioClient(baseUrl);
 
-  Future<void> setAuthHeader() async {
-    client.setHeader({'token': 'usertoken'});
-    print('api setAuthHeader');
-  }
+  // Future<void> setAuthHeader() async {
+  //   client.setHeader({'token': 'usertoken'});
+  //   print('api setAuthHeader');
+  // }
 }
 
 /// A Calculator.

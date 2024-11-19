@@ -35,13 +35,14 @@ class _LoginScreenState extends State<LoginScreen> {
       password: _passwordController.text,
     );
     try {
-      final UserProfileResponse user = await api.login(data);
-      _reset();
+      final UserLoginResponse res = await api.login(data);
       authenticationBloc.add(
-        AuthenticationSuccessEvent(token: token, user: user),
+        AuthenticationSuccessEvent(token: res.token, user: res.user),
       );
-    } catch (_) {
-      //graphQLApi.removeHeader(ApiHeader.xat);
+      _reset();
+    } catch (ex) {
+      print('login screen submit');
+      print(ex.toString());
     }
   }
 
@@ -68,6 +69,8 @@ class _LoginScreenState extends State<LoginScreen> {
         key: _formKey,
         child: Center(
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text('Login Screen $token'),
               TextFormField(

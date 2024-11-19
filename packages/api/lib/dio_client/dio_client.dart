@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
-// import 'interceptors.dart';
+import 'interceptors.dart';
 
 class DioClient {
   final String _baseUrl;
@@ -17,17 +17,17 @@ class DioClient {
         )) {
     if (kDebugMode) {
       debugPrint(_baseUrl);
-      // _dio.interceptors.addAll([LoggerInterceptor()]);
+      _dio.interceptors.addAll([LoggerInterceptor()]);
     }
   }
 
-  void setHeader(Map<String, String> headers) {
-    print('dio client setHeader: $headers');
-    _dio.options.copyWith(
-      preserveHeaderCase: true,
-      headers: headers,
-    );
-  }
+  // void setHeader(Map<String, String> headers) {
+  //   print('dio client setHeader: $headers');
+  //   _dio.options.copyWith(
+  //     preserveHeaderCase: true,
+  //     headers: headers,
+  //   );
+  // }
 
   // GET METHOD
   Future<Response> get(
@@ -38,6 +38,9 @@ class DioClient {
     ProgressCallback? onReceiveProgress,
   }) async {
     try {
+      print('dio get options: $options');
+      print('dio get url: $url');
+      print('dio get params: $queryParameters');
       final Response response = await _dio.get(
         url,
         queryParameters: queryParameters,

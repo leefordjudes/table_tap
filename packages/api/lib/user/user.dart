@@ -34,18 +34,23 @@ extension UserRepository on ApiRepository {
     }
   }
 
-  Future<UserProfileResponse> login(LoginRequest req) async {
+  Future<UserLoginResponse> login(LoginRequest req) async {
     try {
+      print(req.toJson());
+      final req1 = LoginRequest(
+        username: 'queenventuread@gmail.com',
+        password: r'Wkyi$851',
+      );
       final res = await client.get(
         '/bizzUiApi/auth/user/UserLoginHandler.ashx',
-        queryParameters: req.toJson(),
+        queryParameters: req1.toJson(),
       );
       final loginRes = jsonDecode(res.data);
       if (loginRes['Response'] != 'OK') {
         throw Exception('Login failed');
       }
-      final result = UserProfileResponse.fromJson(loginRes['UserDetails']);
-      print('UserProfileResponse.fromJson: $result');
+      final result = UserLoginResponse.fromJson(loginRes['UserDetails']);
+      print('UserLoginResponse.fromJson: $result');
       return result;
     } catch (err) {
       debugPrint(err.toString());
