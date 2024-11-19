@@ -30,9 +30,9 @@ class AuthenticationBloc
     try {
       final UserProfileResponse profile = await api.getUserProfile();
       return emit(Authenticated(user: profile));
-    } catch (err) {
-      debugPrint('getUserProfile error: ${err.toString()}');
-      return emit(Unauthenticated());
+    } catch (ex) {
+      debugPrint('getUserProfile error: ${ex.toString()}');
+      return emit(AuthenticationFailure(ex.toString()));
     }
   }
 

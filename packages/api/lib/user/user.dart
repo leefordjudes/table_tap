@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -24,6 +25,9 @@ extension UserRepository on ApiRepository {
       final result = UserProfileResponse.fromJson(data);
       print('UserProfileResponse.fromJson: $result');
       return result;
+    } on DioException catch (err) {
+      debugPrint(err.message);
+      throw Exception(err.message ?? 'Internal http exception');
     } catch (err) {
       debugPrint(err.toString());
       throw Exception(err.toString());

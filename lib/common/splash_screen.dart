@@ -11,7 +11,7 @@ class SplashScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Table Tap'),
+        title: const Text('Splash'),
       ),
       // backgroundColor: backgroundColor,
       body: const Center(child: CircularProgressIndicator()),

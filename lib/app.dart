@@ -64,7 +64,9 @@ class _AppViewState extends State<AppView> {
       home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
         builder: (context, state) {
           Widget currentScreen = const SplashScreen();
-          if (state is Authenticated) {
+          if (state is AuthenticationFailure) {
+            currentScreen = ErrorScreen(error: state.error);
+          } else if (state is Authenticated) {
             currentScreen = const DashboardScreen();
           } else if (state is Unauthenticated) {
             currentScreen = const LoginScreen();
