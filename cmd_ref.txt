@@ -21,3 +21,6 @@ https://github.com/mahdinazmi/Flutter-Register-Login/blob/main/lib/core/network/
 https://github.com/mahdinazmi/Flutter-Register-Login/blob/main/lib/core/network/interceptors.dart
 
 https://medium.com/tide-engineering-team/basic-and-advanced-networking-in-dart-and-flutter-the-tide-way-part-3-http-client-basic-d922fb65a01c
+
+
+https://stackoverflow.com/questions/65630743/how-to-solve-flutter-web-api-cors-error-only-with-dart-code
