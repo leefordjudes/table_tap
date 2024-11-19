@@ -1,29 +1,23 @@
 part of './user.dart';
 
+@JsonSerializable(fieldRename: FieldRename.pascal)
 class UserProfileResponse {
   late String id;
-  late String email;
   late String name;
-  late String mobileNo;
-  late bool verificationStatus;
+  late String email;
+  late String mobile;
 
-  UserProfileResponse.fromJson(Map data) {
-    id = data['id'];
-    email = data['email'];
-    name = data['name'];
-    mobileNo = data['mobileNo'];
-    verificationStatus = data['verificationStatus'] ?? false;
-  }
+  UserProfileResponse({
+    required this.id,
+    required this.name,
+    required this.email,
+    required this.mobile,
+  });
 
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'email': email,
-      'name': name,
-      'mobileNo': mobileNo,
-      'verificationStatus': verificationStatus,
-    };
-  }
+  factory UserProfileResponse.fromJson(Map<String, Object?> json) =>
+      _$UserProfileResponseFromJson(json);
+
+  Map<String, dynamic> toJson() => _$UserProfileResponseToJson(this);
 }
 
 class UserLoginResponse {
@@ -31,8 +25,8 @@ class UserLoginResponse {
   late UserProfileResponse user;
 
   UserLoginResponse.fromJson(Map data) {
-    token = data['token'];
-    user = UserProfileResponse.fromJson(data['user']);
+    token = data['Token'];
+    user = UserProfileResponse.fromJson(data['UserDetails']);
   }
 
   Map<String, dynamic> toJson() {

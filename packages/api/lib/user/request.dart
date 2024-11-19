@@ -1,22 +1,22 @@
 part of './user.dart';
 
 class LoginRequest {
-  late String identity;
+  late String username;
   late String password;
 
   LoginRequest({
-    required this.identity,
+    required this.username,
     required this.password,
   });
 
   LoginRequest.fromJson(Map data) {
-    identity = data['identity'];
+    username = data['username'];
     password = data['password'];
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'identity': identity,
+      'username': username,
       'password': password,
     };
   }

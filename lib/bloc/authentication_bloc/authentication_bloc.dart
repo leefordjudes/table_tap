@@ -13,10 +13,31 @@ class AuthenticationBloc
 
   AuthenticationBloc({required this.api}) : super(Unauthenticated()) {
     on<AuthenticationInitEvent>(_onInit);
+    on<AuthenticationSuccessEvent>(_onAuthSuccess);
   }
 
   void _onInit(
     AuthenticationInitEvent event,
+    Emitter<AuthenticationState> emit,
+  ) async {
+    final token = api.storage.read<String>('token');
+    if (token == null) {
+      emit(Unauthenticated());
+      api.storage.write('token', 'user-token1');
+      return;
+    }
+    api.client.setHeader({'token': token});
+    try {
+      final UserProfileResponse profile = await api.getUserProfile();
+      return emit(Authenticated(user: profile));
+    } catch (err) {
+      debugPrint('getUserProfile error: ${err.toString()}');
+      return emit(Unauthenticated());
+    }
+  }
+
+  void _onAuthSuccess(
+    AuthenticationSuccessEvent event,
     Emitter<AuthenticationState> emit,
   ) async {
     final token = api.storage.read<String>('token');
