@@ -31,7 +31,8 @@ class AuthenticationBloc
       return emit(Authenticated(user: profile));
     } catch (ex) {
       debugPrint('getUserProfile error: ${ex.toString()}');
-      return emit(AuthenticationFailure(ex.toString()));
+      await api.storage.remove('token');
+      return emit(Unauthenticated());
     }
   }
 
@@ -39,17 +40,7 @@ class AuthenticationBloc
     AuthenticationSuccessEvent event,
     Emitter<AuthenticationState> emit,
   ) async {
-    final token = api.storage.read<String>('token');
-    if (token == null) {
-      return emit(Unauthenticated());
-    }
-    // api.client.setHeader({'token': token});
-    try {
-      final UserProfileResponse profile = await api.getUserProfile();
-      return emit(Authenticated(user: profile));
-    } catch (err) {
-      debugPrint('getUserProfile error: ${err.toString()}');
-      return emit(Unauthenticated());
-    }
+    await api.storage.write('token', event.token);
+    return emit(Authenticated(user: event.user));
   }
 }

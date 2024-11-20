@@ -1,4 +1,13 @@
 commands:
+run app in chrome:
+> flutter run -d chrome --web-renderer html --web-browser-flag "--disable-web-security"
+run app in windows
+> flutter run -d windows
+run app in android (emulator should be in running)
+> flutter run
+
+
+
 > flutter create table_tap --org "com.queentouchtech"
 
 cd table_tap
@@ -13,7 +22,10 @@ table_tap> flutter create -t package packages/tools
 table_tap> cd packages\tools
 table_tap\packages\tools> flutter pub add collection:1.18.0
 
+table_tap\package\api> flutter pub get
+table_tap\package\tools> flutter pub get
 table_tap> flutter pub get
+
 
 reference:
 Dio Setup

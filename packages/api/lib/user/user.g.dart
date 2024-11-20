@@ -8,7 +8,7 @@ part of 'user.dart';
 
 UserProfileResponse _$UserProfileResponseFromJson(Map<String, dynamic> json) =>
     UserProfileResponse(
-      id: json['Id'] as String,
+      id: json['Id'] as int,
       name: json['Name'] as String,
       email: json['Email'] as String,
       mobile: json['Mobile'] as String,

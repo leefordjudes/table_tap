@@ -5,9 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:api/api.dart';
 
 import '../../bloc/bloc.dart';
-import './signup_screen.dart';
-import '../dashboard/dashboard_screen.dart';
-import '../../common/common.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({
@@ -21,42 +18,46 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  final _usernameFocusNode = FocusNode();
-  final _usernameController = TextEditingController();
+  final _emailFocusNode = FocusNode();
+  final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
   late final String token;
 
   void _submit() async {
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+
     final api = context.read<ApiRepository>();
     final authenticationBloc = context.read<AuthenticationBloc>();
     final data = LoginRequest(
-      username: _usernameController.text,
-      password: _passwordController.text,
+      username: _emailController.text.trim(),
+      password: _passwordController.text.trim(),
     );
     try {
       final UserLoginResponse res = await api.login(data);
       authenticationBloc.add(
         AuthenticationSuccessEvent(token: res.token, user: res.user),
       );
-      _reset();
     } catch (ex) {
-      print('login screen submit');
-      print(ex.toString());
+      print('login error: ${ex.toString()}');
     }
+    _reset();
   }
 
   void _reset() {
-    _usernameController.clear();
+    _emailController.clear();
     _passwordController.clear();
-    _usernameFocusNode.requestFocus();
+    _emailFocusNode.requestFocus();
   }
 
   @override
   void initState() {
     super.initState();
-    final api = context.read<ApiRepository>();
-    token = api.storage.read<String>('token') ?? 'NoToken';
+    context.read<ApiRepository>().storage.remove('token').then((result) {
+      // previously stored token removed
+    });
   }
 
   @override
@@ -68,49 +69,78 @@ class _LoginScreenState extends State<LoginScreen> {
       body: Form(
         key: _formKey,
         child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text('Login Screen $token'),
-              TextFormField(
-                autofocus: true,
-                focusNode: _usernameFocusNode,
-                textInputAction: TextInputAction.next,
-                controller: _usernameController,
-              ),
-              TextFormField(
-                obscureText: true,
-                controller: _passwordController,
-                textInputAction: TextInputAction.none,
-                onFieldSubmitted: (_) {
-                  _submit();
-                },
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pushAndRemoveUntil(
-                    NoAnimationMaterialPageRoute(
-                      builder: (context) => const DashboardScreen(),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Text('Login'),
+                const SizedBox(height: 20),
+                TextFormField(
+                  autofocus: true,
+                  autovalidateMode: AutovalidateMode.disabled,
+                  focusNode: _emailFocusNode,
+                  textInputAction: TextInputAction.next,
+                  decoration: InputDecoration(
+                    hintText: 'Email',
+                    suffixIcon: const Icon(Icons.person),
+                    errorStyle: const TextStyle(
+                      color: Colors.transparent,
+                      fontSize: 0,
                     ),
-                    (_) => false,
-                  );
-                },
-                child: const Text('Dashboard'),
-              ),
-              const SizedBox(height: 10),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pushAndRemoveUntil(
-                    NoAnimationMaterialPageRoute(
-                      builder: (context) => const SignupScreen(),
+                    errorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(6.0),
+                      borderSide: const BorderSide(color: Colors.red, width: 1),
                     ),
-                    (_) => false,
-                  );
-                },
-                child: const Text('Signup'),
-              ),
-            ],
+                  ),
+                  controller: _emailController,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Enter email address.';
+                    }
+                    final emailRegExp = RegExp(
+                      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+                    );
+                    if (!emailRegExp.hasMatch(value)) {
+                      return 'Enter valid email address.';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 10),
+                TextFormField(
+                  autovalidateMode: AutovalidateMode.disabled,
+                  decoration: InputDecoration(
+                    hintText: 'Password',
+                    suffixIcon: const Icon(Icons.key),
+                    errorStyle: const TextStyle(
+                      color: Colors.transparent,
+                      fontSize: 0,
+                    ),
+                    errorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(6.0),
+                      borderSide: const BorderSide(color: Colors.red, width: 1),
+                    ),
+                  ),
+                  obscureText: true,
+                  controller: _passwordController,
+                  textInputAction: TextInputAction.none,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      // todo => validate length
+                      return 'Enter password.';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: _submit,
+                  child: const Text('Login'),
+                ),
+              ],
+            ),
           ),
         ),
       ),

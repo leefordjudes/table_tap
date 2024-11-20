@@ -2,7 +2,7 @@ part of './user.dart';
 
 @JsonSerializable(fieldRename: FieldRename.pascal)
 class UserProfileResponse {
-  late String id;
+  late int id;
   late String name;
   late String email;
   late String mobile;
@@ -23,6 +23,11 @@ class UserProfileResponse {
 class UserLoginResponse {
   late String token;
   late UserProfileResponse user;
+
+  UserLoginResponse({
+    required this.token,
+    required this.user,
+  });
 
   UserLoginResponse.fromJson(Map data) {
     token = data['Token'];
