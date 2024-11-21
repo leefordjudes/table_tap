@@ -1,8 +1,10 @@
-import 'package:api/user/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:email_validator/email_validator.dart';
+
 import 'package:api/api.dart';
+import 'package:api/user/user.dart';
 
 import '../../bloc/bloc.dart';
 
@@ -99,10 +101,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     if (value == null || value.isEmpty) {
                       return 'Enter email address.';
                     }
-                    final emailRegExp = RegExp(
-                      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
-                    );
-                    if (!emailRegExp.hasMatch(value)) {
+                    if (!EmailValidator.validate(value.trim())) {
                       return 'Enter valid email address.';
                     }
                     return null;
