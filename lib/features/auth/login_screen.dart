@@ -1,10 +1,12 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:email_validator/email_validator.dart';
 
-import 'package:api/api.dart';
+import 'package:api/lib.dart';
 import 'package:api/user/user.dart';
+import 'package:table_tap/common/common.dart';
 
 import '../../bloc/bloc.dart';
 
@@ -17,7 +19,7 @@ class LoginScreen extends StatefulWidget {
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends State<LoginScreen> with Loading {
   final _formKey = GlobalKey<FormState>();
 
   final _emailFocusNode = FocusNode();
@@ -27,7 +29,9 @@ class _LoginScreenState extends State<LoginScreen> {
   late final String token;
 
   void _submit() async {
+    toggleLoading(true);
     if (!_formKey.currentState!.validate()) {
+      toggleLoading(false);
       return;
     }
 
@@ -42,9 +46,19 @@ class _LoginScreenState extends State<LoginScreen> {
       authenticationBloc.add(
         AuthenticationSuccessEvent(token: res.token, user: res.user),
       );
-    } catch (ex) {
-      print('login error: ${ex.toString()}');
+      toggleLoading(false);
+    } on DioException catch (ex) {
+      toggleLoading(false);
+      if (mounted) {
+        context.errorToast(ex.message ?? 'Internal server error');
+      }
+    } on CustomException catch (ex) {
+      toggleLoading(false);
+      if (mounted) {
+        context.errorToast(ex.message);
+      }
     }
+
     _reset();
   }
 
@@ -136,7 +150,20 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: _submit,
-                  child: const Text('Login'),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (isLoading)
+                        const SizedBox.square(
+                          dimension: 10,
+                          child: CircularProgressIndicator(
+                              color: Colors.white, strokeWidth: 1),
+                        ),
+                      const SizedBox(width: 10),
+                      const Text('Login'),
+                      const SizedBox(width: 10),
+                    ],
+                  ),
                 ),
               ],
             ),
