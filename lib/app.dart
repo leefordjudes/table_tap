@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:toastification/toastification.dart';
+import 'package:get_storage/get_storage.dart';
 
 import 'package:api/api.dart';
 import 'package:tools/tools.dart';
@@ -35,6 +35,7 @@ class App extends StatelessWidget {
               }
             },
             baseUrl: API_BASE_URL,
+            storage: GetStorage(),
           ),
         ),
         BlocProvider(
@@ -58,23 +59,21 @@ class AppView extends StatefulWidget {
 class _AppViewState extends State<AppView> {
   @override
   Widget build(BuildContext context) {
-    return ToastificationWrapper(
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(useMaterial3: false),
-        home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
-          builder: (context, state) {
-            Widget currentScreen = const SplashScreen();
-            if (state is AuthenticationFailure) {
-              currentScreen = ErrorScreen(error: state.error);
-            } else if (state is Authenticated) {
-              currentScreen = const DashboardScreen();
-            } else if (state is Unauthenticated) {
-              currentScreen = const LoginScreen();
-            }
-            return currentScreen;
-          },
-        ),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(useMaterial3: false),
+      home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
+        builder: (context, state) {
+          Widget currentScreen = const SplashScreen();
+          if (state is AuthenticationFailure) {
+            currentScreen = ErrorScreen(error: state.error);
+          } else if (state is Authenticated) {
+            currentScreen = const DashboardScreen();
+          } else if (state is Unauthenticated) {
+            currentScreen = const LoginScreen();
+          }
+          return currentScreen;
+        },
       ),
     );
   }

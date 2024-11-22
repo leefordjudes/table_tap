@@ -56,13 +56,17 @@ extension UserRepository on ApiRepository {
       queryParameters: req.toJson(),
     );
 
+    if (res.statusCode == 200) {
+      print('response: ${res.data}');
+    }
+
     if (res.statusCode == 404) {
       throw CustomException('Resource not found');
     }
 
     if ((res.data as List<dynamic>).isEmpty) {
       // handlerErrors(['Bad request']);
-      throw CustomException('Bad request');
+      throw CustomException('Invalid credential');
     }
     final loginRes = (res.data as List<dynamic>).first as Map<String, dynamic>;
     if (loginRes['Response'] != 'OK') {
