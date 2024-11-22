@@ -27,11 +27,12 @@ class App extends StatelessWidget {
                 (element) => element.isNotNullOrEmpty,
               );
               if (exception != null) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(exception),
-                  ),
-                );
+                context.errorToast(exception);
+                // ScaffoldMessenger.of(context).showSnackBar(
+                //   SnackBar(
+                //     content: Text(exception),
+                //   ),
+                // );
               }
             },
             baseUrl: API_BASE_URL,

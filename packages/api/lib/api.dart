@@ -21,6 +21,9 @@ class ApiRepository {
   //   client.setHeader({'token': 'usertoken'});
   //   print('api setAuthHeader');
   // }
+  void handlerErrors(List<String> errors) {
+    errorHandler.call(errors);
+  }
 }
 
 /// A Calculator.

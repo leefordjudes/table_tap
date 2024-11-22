@@ -27,6 +27,7 @@ extension UserRepository on ApiRepository {
       print('UserProfileResponse.fromJson: $result');
       return result;
     } on DioException catch (err) {
+      errorHandler.call(['err']);
       debugPrint(err.message);
       throw Exception(err.message ?? 'Internal http exception');
     } catch (err) {
@@ -52,6 +53,7 @@ extension UserRepository on ApiRepository {
     }
 
     if ((res.data as List<dynamic>).isEmpty) {
+      // handlerErrors(['Bad request']);
       throw CustomException('Bad request');
     }
     final loginRes = (res.data as List<dynamic>).first as Map<String, dynamic>;
