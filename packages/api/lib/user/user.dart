@@ -1,10 +1,8 @@
-import 'dart:convert';
-
-import 'package:api/custom_exceptions.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import '../custom_exceptions.dart';
 import '../api.dart';
 
 part 'request.dart';
@@ -13,21 +11,31 @@ part 'user.g.dart';
 
 extension UserRepository on ApiRepository {
   /// Retrieves user's profile information
-  Future<UserProfileResponse> getUserProfile() async {
+  Future<UserProfileResponse> getUserProfile(String token) async {
     try {
-      final res = await client.get('/users/1');
-      print('get user profile response: ${res.data}');
-      final data = {
-        'id': '1',
-        'email': 'user@sample.com',
-        'name': 'testuser',
-        'mobile': '9876543210',
-      };
-      final result = UserProfileResponse.fromJson(data);
+      final res = await client.get(
+          '/bizzUiApi/auth/user/GetUserDetailsByToken.ashx',
+          queryParameters: {'token': token});
+      if (res.statusCode == 200) {
+        print('get user profile response: ${res.data}');
+      }
+      if (res.statusCode == 404) {
+        throw CustomException(res.data['Response']);
+      }
+
+      if ((res.data as List<dynamic>).isEmpty) {
+        throw CustomException('Bad request');
+      }
+      final profileRes =
+          (res.data as List<dynamic>).first as Map<String, dynamic>;
+      if (profileRes['Response'] != 'Success') {
+        throw CustomException('Failed to get profile');
+      }
+      final result = UserLoginResponse.fromJson(profileRes);
       print('UserProfileResponse.fromJson: $result');
-      return result;
+      return result.user;
     } on DioException catch (err) {
-      errorHandler.call(['err']);
+      // errorHandler.call(['err']);
       debugPrint(err.message);
       throw Exception(err.message ?? 'Internal http exception');
     } catch (err) {

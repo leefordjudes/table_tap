@@ -1,6 +1,7 @@
 library api;
 
 import 'package:get_storage/get_storage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'dio_client/dio_client.dart';
 
@@ -9,11 +10,12 @@ typedef ErrorHandler = Function(List<String>);
 class ApiRepository {
   final DioClient client;
   final ErrorHandler errorHandler;
-  final GetStorage storage;
+  // final GetStorage storage;
+  // final SharedPreferences storage;
 
   ApiRepository({
     required this.errorHandler,
-    required this.storage,
+    // required this.storage,
     required baseUrl,
   }) : client = DioClient(baseUrl);
 

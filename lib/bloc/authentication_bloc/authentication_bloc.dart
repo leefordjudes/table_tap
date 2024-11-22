@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:api/api.dart';
 import 'package:api/user/user.dart';
+import 'package:get_storage/get_storage.dart';
 
 part 'authentication_event.dart';
 part 'authentication_state.dart';
@@ -20,18 +21,18 @@ class AuthenticationBloc
     AuthenticationInitEvent event,
     Emitter<AuthenticationState> emit,
   ) async {
-    final token = api.storage.read<String>('token');
+    final token = await GetStorage().read('token');
+    print('\n exToken: $token\n');
     if (token == null) {
       emit(Unauthenticated());
       return;
     }
-    // api.client.setHeader({'token': token});
     try {
-      final UserProfileResponse profile = await api.getUserProfile();
+      final UserProfileResponse profile = await api.getUserProfile(token);
       return emit(Authenticated(user: profile));
     } catch (ex) {
       debugPrint('getUserProfile error: ${ex.toString()}');
-      await api.storage.remove('token');
+      // await GetStorage().remove('token');
       return emit(Unauthenticated());
     }
   }
@@ -40,7 +41,11 @@ class AuthenticationBloc
     AuthenticationSuccessEvent event,
     Emitter<AuthenticationState> emit,
   ) async {
-    await api.storage.write('token', event.token);
+    print('onAuthSuccess');
+    print('event token: ${event.token}');
+    // await api.storage.write('token', event.token);
+    // await api.storage.setString('token', event.token);
+    await GetStorage().write('token', event.token);
     return emit(Authenticated(user: event.user));
   }
 }

@@ -69,14 +69,6 @@ class _LoginScreenState extends State<LoginScreen> with Loading {
   }
 
   @override
-  void initState() {
-    super.initState();
-    context.read<ApiRepository>().storage.remove('token').then((result) {
-      // previously stored token removed
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(

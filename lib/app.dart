@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:toastification/toastification.dart';
 
 import 'package:api/api.dart';
@@ -36,7 +35,6 @@ class App extends StatelessWidget {
               }
             },
             baseUrl: API_BASE_URL,
-            storage: GetStorage(),
           ),
         ),
         BlocProvider(

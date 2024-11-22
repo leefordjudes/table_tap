@@ -18,7 +18,8 @@ class _SignupScreenState extends State<SignupScreen> {
   @override
   void initState() {
     final api = context.read<ApiRepository>();
-    token = api.storage.read<String>('token') ?? 'NoToken';
+    // token = api.storage.read<String>('token') ?? 'NoToken';
+    // token = api.storage.getString('token') ?? 'NoToken';
     super.initState();
   }
 
