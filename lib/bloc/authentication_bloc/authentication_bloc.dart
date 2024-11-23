@@ -32,7 +32,8 @@ class AuthenticationBloc
     } catch (ex) {
       debugPrint('getUserProfile error: ${ex.toString()}');
       await api.storage.remove('token');
-      return emit(Unauthenticated());
+      return emit(AuthenticationFailure('auth failure'));
+      // return emit(Unauthenticated());
     }
   }
 

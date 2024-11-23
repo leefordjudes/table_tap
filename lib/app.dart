@@ -27,11 +27,6 @@ class App extends StatelessWidget {
               );
               if (exception != null) {
                 context.errorToast(exception);
-                // ScaffoldMessenger.of(context).showSnackBar(
-                //   SnackBar(
-                //     content: Text(exception),
-                //   ),
-                // );
               }
             },
             baseUrl: API_BASE_URL,
@@ -57,24 +52,86 @@ class AppView extends StatefulWidget {
 }
 
 class _AppViewState extends State<AppView> {
+  final _navigatorKey = GlobalKey<NavigatorState>();
+
+  NavigatorState get _navigator => _navigatorKey.currentState!;
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: _navigatorKey,
       debugShowCheckedModeBanner: false,
       theme: ThemeData(useMaterial3: false),
-      home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
-        builder: (context, state) {
-          Widget currentScreen = const SplashScreen();
-          if (state is AuthenticationFailure) {
-            currentScreen = ErrorScreen(error: state.error);
-          } else if (state is Authenticated) {
-            currentScreen = const DashboardScreen();
-          } else if (state is Unauthenticated) {
-            currentScreen = const LoginScreen();
-          }
-          return currentScreen;
-        },
+      onGenerateRoute: (_) => NoAnimationMaterialPageRoute(
+        builder: (context) => const SplashScreen(),
       ),
+      builder: (context, child) {
+        return MultiBlocProvider(
+          providers: [
+            RepositoryProvider(
+              create: (context) => ApiRepository(
+                errorHandler: (errors) {
+                  final exception = errors.firstWhereOrNull(
+                    (element) => element.isNotNullOrEmpty,
+                  );
+                  if (exception != null) {
+                    context.errorToast(exception);
+                  }
+                },
+                baseUrl: API_BASE_URL,
+                storage: GetStorage(),
+              ),
+            ),
+            BlocProvider(
+              create: (context) =>
+                  AuthenticationBloc(api: context.read<ApiRepository>())
+                    ..add(AuthenticationInitEvent()),
+            ),
+          ],
+          child: BlocConsumer<AuthenticationBloc, AuthenticationState>(
+            listener: (context, state) async {
+              if (state is AuthenticationFailure) {
+                _navigator.pushAndRemoveUntil(
+                  NoAnimationMaterialPageRoute(
+                    builder: (context) => const LoginScreen(),
+                  ),
+                  (_) => false,
+                );
+                context.errorToast(state.error);
+              } else if (state is Unauthenticated) {
+                _navigator.pushAndRemoveUntil(
+                  NoAnimationMaterialPageRoute(
+                    builder: (context) => const LoginScreen(),
+                  ),
+                  (_) => false,
+                );
+              } else if (state is Authenticated) {
+                _navigator.pushAndRemoveUntil(
+                  NoAnimationMaterialPageRoute(
+                    builder: (context) => const DashboardScreen(),
+                  ),
+                  (_) => false,
+                );
+              }
+            },
+            builder: (context, state) {
+              return child!;
+            },
+          ),
+        );
+      },
     );
+    // return BlocBuilder<AuthenticationBloc, AuthenticationState>(
+    //   builder: (context, state) {
+    //     Widget currentScreen = const SplashScreen();
+    //     if (state is AuthenticationFailure) {
+    //       currentScreen = ErrorScreen(error: state.error);
+    //     } else if (state is Authenticated) {
+    //       currentScreen = const DashboardScreen();
+    //     } else if (state is Unauthenticated) {
+    //       currentScreen = const LoginScreen();
+    //     }
+    //     return currentScreen;
+    //   },
+    // );
   }
 }

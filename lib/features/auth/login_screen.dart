@@ -42,7 +42,7 @@ class _LoginScreenState extends State<LoginScreen> with Loading {
       password: _passwordController.text.trim(),
     );
     try {
-      final UserLoginResponse res = await api.login(data);
+      final UserLoginResponse res = await api.signin(data);
       authenticationBloc.add(
         AuthenticationSuccessEvent(token: res.token, user: res.user),
       );

@@ -22,6 +22,7 @@ class ApiRepository {
   //   print('api setAuthHeader');
   // }
   void handlerErrors(List<String> errors) {
+    print('handle errors');
     errorHandler.call(errors);
   }
 }

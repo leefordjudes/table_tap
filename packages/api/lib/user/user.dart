@@ -14,8 +14,9 @@ extension UserRepository on ApiRepository {
   Future<UserProfileResponse> getUserProfile(String token) async {
     try {
       final res = await client.get(
-          '/bizzUiApi/auth/user/GetUserDetailsByToken.ashx',
-          queryParameters: {'token': token});
+        '/bizzUiApi/auth/user/GetUserDetailsByToken.ashx',
+        queryParameters: {'token': token},
+      );
       if (res.statusCode == 200) {
         print('get user profile response: ${res.data}');
       }
@@ -44,7 +45,7 @@ extension UserRepository on ApiRepository {
     }
   }
 
-  Future<UserLoginResponse> login(LoginRequest req) async {
+  Future<UserLoginResponse> signin(LoginRequest req) async {
     // final dummy = await client.get('/tamilbible/dummy');
     // print('==>>\n\n${dummy.data}\n\n<<==');
     // final req1 = LoginRequest(
@@ -74,5 +75,9 @@ extension UserRepository on ApiRepository {
     }
     final result = UserLoginResponse.fromJson(loginRes);
     return result;
+  }
+
+  Future<void> signout() async {
+    handlerErrors(['err1', 'err2']);
   }
 }
